@@ -9,3 +9,8 @@
 5. Use the browser to go to <https://www.fitbit.com/oauth2/authorize?response_type=code&client_id=[client-id]&redirect_uri=http://localhost:2323&scope=heartrate>
 6. Authenticate
 7. Run `yarn saveDay [YYYY-MM-DD]` (your data will be saved in _data/[YYYY-MM-DD]_)
+
+## How to see visualization
+
+1. Run `python3 -m http.server`
+2. Visit _localhost:8000/visualization_
