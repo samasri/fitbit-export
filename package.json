@@ -7,7 +7,7 @@
     "save": "ts-node index.ts save",
     "introspect": "ts-node index.ts introspect",
     "refresh": "ts-node index.ts refresh",
-    "auth-server": "ts-node auth-server.ts"
+    "auth": "ts-node index.ts auth-server"
   },
   "dependencies": {
     "@types/commander": "^2.12.2",

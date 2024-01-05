@@ -1,11 +1,13 @@
 import { Command } from "commander";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import { env } from "./env";
 import { updateEnv } from "./utils";
 import assert from "assert";
 import dateValidator from "date-and-time";
 import { existsSync, writeFileSync } from "fs";
 import pMap from "p-map";
+import { serveAuthServer } from "./auth-server";
+import { errorWrapper } from "./error-wrapper";
 
 const baseUrl = "https://api.fitbit.com";
 const hrEndpoint = (userId: string, date: string) =>
@@ -105,28 +107,6 @@ const saveRange = async (startDate: string, endDate: string) => {
   await pMap(dates, (date) => save(toString(date)));
 };
 
-const errorWrapper = async (callback: Function, ...args: any[]) => {
-  try {
-    await callback(...args);
-  } catch (e) {
-    if (e instanceof AxiosError) {
-      const { data } = e.response as {
-        data: {
-          success: boolean;
-          errors: { errorType: string; message: string }[];
-        };
-      };
-      const { errors } = data;
-      if (errors.length && errors[0].errorType === "expired_token") {
-        console.log(
-          "Token is expired. Run `yarn auth-server` to re-authenticate"
-        );
-      }
-      console.log(data);
-    } else console.log((e as Error).message);
-  }
-};
-
 const program = new Command();
 program.version("1.0.0");
 program.allowUnknownOption();
@@ -137,6 +117,11 @@ program
     "Displays more information about the current token in the environment"
   )
   .action(async () => errorWrapper(introspect));
+
+program
+  .command("auth-server")
+  .description("Hosts a server and gives instructions on how to authenticate")
+  .action(async () => errorWrapper(serveAuthServer));
 
 program
   .command("refresh")
