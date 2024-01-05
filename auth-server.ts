@@ -47,7 +47,7 @@ app.get("/", async (req: Request, res: Response) => {
     assert(refresh_token, "Refresh token was not found");
 
     updateEnv({ access_token, refresh_token });
-    res.status(200).send();
+    res.status(200).send("Token updated successfully");
   } else {
     res.status(400).send('Missing "code" parameter in the request.');
   }
