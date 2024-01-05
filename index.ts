@@ -5,6 +5,7 @@ import { updateEnv } from "./utils";
 import assert from "assert";
 import dateValidator from "date-and-time";
 import { existsSync, writeFileSync } from "fs";
+import pMap from "p-map";
 
 const baseUrl = "https://api.fitbit.com";
 const hrEndpoint = (userId: string, date: string) =>
@@ -84,12 +85,45 @@ const save = async (date: string) => {
   writeFileSync(filePath, strigified);
 };
 
+const saveRange = async (startDate: string, endDate: string) => {
+  if (!dateValidator.isValid(startDate, "YYYY-MM-DD"))
+    throw new Error("Invalid startDate argument");
+  if (!dateValidator.isValid(endDate, "YYYY-MM-DD"))
+    throw new Error("Invalid endDate argument");
+
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+
+  const dates = [] as Date[];
+
+  const currentDate = new Date(start);
+  while (currentDate <= end) {
+    dates.push(new Date(currentDate));
+    currentDate.setDate(currentDate.getDate() + 1);
+  }
+  const toString = (date: Date) => date.toISOString().split("T")[0];
+  await pMap(dates, (date) => save(toString(date)));
+};
+
 const errorWrapper = async (callback: Function, ...args: any[]) => {
   try {
     await callback(...args);
   } catch (e) {
-    if (e instanceof AxiosError) console.log(e.response?.data);
-    else console.log((e as Error).message);
+    if (e instanceof AxiosError) {
+      const { data } = e.response as {
+        data: {
+          success: boolean;
+          errors: { errorType: string; message: string }[];
+        };
+      };
+      const { errors } = data;
+      if (errors.length && errors[0].errorType === "expired_token") {
+        console.log(
+          "Token is expired. Run `yarn auth-server` to re-authenticate"
+        );
+      }
+      console.log(data);
+    } else console.log((e as Error).message);
   }
 };
 
@@ -112,9 +146,23 @@ program
   .action(async () => errorWrapper(refresh));
 
 program
-  .command("save")
+  .command("saveDay")
   .argument("-d, --date", "Get data of a certain day. Date format: YYYY-MM-DD")
   .description("Saves the heart rate data for a certain day")
   .action(async (date) => errorWrapper(save, date));
+
+program
+  .command("save")
+  .requiredOption(
+    "-sd, --start-date [date]",
+    "Start date. Date format: YYYY-MM-DD"
+  )
+  .requiredOption("-ed, --end-date [date]", "End date. Date format: YYYY-MM-DD")
+  .description(
+    "Saves the heart rate data for a certain date range (start and end inclusive)"
+  )
+  .action(async ({ startDate, endDate }) =>
+    errorWrapper(saveRange, startDate, endDate)
+  );
 
 program.parse(process.argv);
