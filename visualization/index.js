@@ -23,54 +23,6 @@ const parseData = async (date, time) => {
   return [data.map((e) => e.time), data.map((e) => e.value)];
 };
 
-const chartjs = async (date, time) => {
-  const [timeLabels, values] = await parseData(date, time);
-
-  const ctx = document.getElementById("heartRateChart").getContext("2d");
-  new Chart(ctx, {
-    type: "line",
-    data: {
-      labels: timeLabels,
-      datasets: [
-        {
-          label: "Heart Rate",
-          data: values,
-          borderColor: "rgba(75, 192, 192, 1)",
-          borderWidth: 1,
-          fill: false,
-        },
-      ],
-    },
-    options: {
-      responsive: true,
-      plugins: {
-        title: {
-          display: true,
-          text: "Heart Rate Data",
-        },
-      },
-      interaction: {
-        intersect: false,
-      },
-      scales: {
-        x: {
-          display: true,
-          title: {
-            display: true,
-          },
-        },
-        y: {
-          display: true,
-          title: {
-            display: true,
-            text: "Heart Rate",
-          },
-        },
-      },
-    },
-  });
-};
-
 const highCharts = async (date, time) => {
   const [timeLabels, values] = await parseData(date, time);
   Highcharts.chart("container", {
