@@ -4,7 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "save": "ts-node ./src/index.ts save",
+    "save": "ts-node ./src/index.ts saveDay",
     "introspect": "ts-node ./src/index.ts introspect",
     "refresh": "ts-node ./src/index.ts refresh",
     "auth": "ts-node ./src/index.ts auth-server"
