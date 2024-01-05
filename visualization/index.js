@@ -4,14 +4,7 @@ const luxonify = (time) => {
   const [hours, minutes, seconds] = time.split(":");
   return DateTime.fromObject({ hours, minutes, seconds });
 };
-const plus1Hour = (time) => {
-  const [hours, minutes, seconds] = time.split(":");
-  return DateTime.fromObject({
-    hours: Number(hours) + 1,
-    minutes,
-    seconds,
-  });
-};
+
 const parseData = async (date, time) => {
   const day = await fetch(`../data/${date}`);
   let data = (await day.json()).dataset;
@@ -39,10 +32,13 @@ const highCharts = async (date, time) => {
       title: {
         text: "Heart rate",
       },
+      // tickPositioner: function () {
+      //   return [40, 50, 60, 70, 80, 90];
+      // },
     },
     series: [
       {
-        name: "Jane",
+        name: "Heart Rate",
         data: values,
       },
     ],
