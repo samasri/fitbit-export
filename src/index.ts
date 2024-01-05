@@ -1,13 +1,14 @@
-import { Command } from "commander";
 import axios from "axios";
-import { env } from "./env";
-import { updateEnv } from "./utils";
 import assert from "assert";
+import { Command } from "commander";
 import dateValidator from "date-and-time";
 import { existsSync, writeFileSync } from "fs";
 import pMap from "p-map";
+
 import { serveAuthServer } from "./auth-server";
-import { errorWrapper } from "./error-wrapper";
+import { errorWrapper } from "./utils/error-wrapper";
+import { env } from "./env";
+import { updateEnv } from "../utils";
 
 const baseUrl = "https://api.fitbit.com";
 const hrEndpoint = (userId: string, date: string) =>

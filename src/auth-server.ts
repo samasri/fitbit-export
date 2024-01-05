@@ -1,25 +1,11 @@
 import axios from "axios";
 import assert from "assert";
 import express, { Request, Response } from "express";
-import * as readline from "readline";
 
-import { errorWrapper } from "./error-wrapper";
+import { errorWrapper } from "./utils/error-wrapper";
 import { env } from "./env";
-import { updateEnv } from "./utils";
-
-const askQuestion = (query: string): Promise<string> => {
-  const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout,
-  });
-
-  return new Promise<string>((resolve) =>
-    rl.question(query, (answer: string) => {
-      resolve(answer);
-      rl.close();
-    })
-  );
-};
+import { updateEnv } from "../utils";
+import { askQuestion } from "./utils/stdin";
 
 const baseUrl = "https://api.fitbit.com";
 

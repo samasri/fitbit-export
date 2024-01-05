@@ -4,15 +4,12 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "save": "ts-node index.ts save",
-    "introspect": "ts-node index.ts introspect",
-    "refresh": "ts-node index.ts refresh",
-    "auth": "ts-node index.ts auth-server"
+    "save": "ts-node ./src/index.ts save",
+    "introspect": "ts-node ./src/index.ts introspect",
+    "refresh": "ts-node ./src/index.ts refresh",
+    "auth": "ts-node ./src/index.ts auth-server"
   },
   "dependencies": {
-    "@types/commander": "^2.12.2",
-    "@types/date-and-time": "^3.0.3",
-    "@types/express": "^4.17.20",
     "axios": "^1.5.1",
     "commander": "^11.1.0",
     "date-and-time": "^3.0.3",
@@ -22,7 +19,10 @@
   },
   "devDependencies": {
     "@types/axios": "^0.14.0",
+    "@types/commander": "^2.12.2",
+    "@types/date-and-time": "^3.0.3",
     "@types/dotenv": "^8.2.0",
+    "@types/express": "^4.17.20",
     "@types/node": "^20.8.7",
     "nodemon": "^3.0.1",
     "prettier": "^3.0.3",
