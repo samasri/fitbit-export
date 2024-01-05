@@ -56,12 +56,13 @@ export const serveAuthServer = () => {
     if (code) {
       await save(code);
       res.status(200).send("Token updated successfully");
+      server.close();
     } else {
       res.status(400).send('Missing "code" parameter in the request.');
     }
   });
 
-  app.listen(port, () => {
+  const server = app.listen(port, () => {
     console.log(
       `Server is running on port ${port}. Now visit the following page to authenticate:
 
@@ -69,6 +70,9 @@ https://www.fitbit.com/oauth2/authorize?response_type=code&client_id=${env.clien
 
 If the page does not redirect you to this server after authentication (if you're hosting this somewhere other than your own machine), you can enter the code manually here to continue:`
     );
-    askQuestion("Code:").then((code) => errorWrapper(save, code));
+    askQuestion("Code:").then((code) => {
+      errorWrapper(save, code);
+      server.close();
+    });
   });
 };
