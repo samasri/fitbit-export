@@ -9,7 +9,6 @@
     - Alternatively, you can copy the code that you get after authenticating from the browser and paste it in the command line
 4. Run `yarn save [YYYY-MM-DD]` (your data will be saved in _data/[YYYY-MM-DD]_)
 
-## How to see visualization
+## Visualization
 
-1. Run `python3 -m http.server`
-2. Visit _localhost:8000/visualization_
+To see a graph of the data, run `yarn visualize`
