@@ -2,13 +2,13 @@ import axios from "axios";
 import assert from "assert";
 import { Command } from "commander";
 import dateValidator from "date-and-time";
-import { existsSync, writeFileSync } from "fs";
+import { existsSync, mkdirSync, writeFileSync } from "fs";
 import pMap from "p-map";
 
 import { serveAuthServer } from "./auth-server";
 import { errorWrapper } from "./utils/error-wrapper";
 import { env } from "./env";
-import { updateEnv } from "../utils";
+import { updateEnv } from "./utils/update-env";
 
 const baseUrl = "https://api.fitbit.com";
 const hrEndpoint = (userId: string, date: string) =>
@@ -16,7 +16,7 @@ const hrEndpoint = (userId: string, date: string) =>
 const dataStoragePath = "./data";
 
 const introspect = async () => {
-  const { token } = env;
+  const { token } = env();
   const { data } = await axios.post(
     `${baseUrl}/1.1/oauth2/introspect`,
     { token },
@@ -31,7 +31,7 @@ const introspect = async () => {
 };
 
 const refresh = async () => {
-  const { token, refresh: refreshToken } = env;
+  const { token, refresh: refreshToken } = env();
   const { data } = await axios.post(
     `${baseUrl}/oauth2/token`,
     {
@@ -78,10 +78,12 @@ const getHeartRate = async (date: string, userId: string, token: string) => {
 const save = async (date: string) => {
   if (!dateValidator.isValid(date, "YYYY-MM-DD"))
     throw new Error("Invalid date argument");
+
+  if (!existsSync(dataStoragePath)) mkdirSync(dataStoragePath);
   const filePath = `${dataStoragePath}/${date}`;
   if (existsSync(filePath)) throw new Error(`File ${filePath} already exists`);
 
-  const { token, userId } = env;
+  const { token, userId } = env();
   const hrData = await getHeartRate(date, userId, token);
   const strigified = JSON.stringify(hrData, undefined, 2);
 

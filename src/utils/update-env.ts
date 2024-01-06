@@ -15,5 +15,10 @@ export const updateEnv = ({
       return `REFRESH_TOKEN="${refresh_token}"`;
     else return line;
   });
+
+  if (!newEnv.some((line) => line.startsWith("ACCESS_TOKEN")))
+    newEnv.push(`ACCESS_TOKEN=${access_token}`);
+  if (!newEnv.some((line) => line.startsWith("REFRESH_TOKEN")))
+    newEnv.push(`REFRESH_TOKEN=${refresh_token}`);
   writeFileSync(".env", newEnv.join("\n"));
 };

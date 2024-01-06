@@ -3,14 +3,14 @@ import assert from "assert";
 import express, { Request, Response } from "express";
 
 import { errorWrapper } from "./utils/error-wrapper";
-import { env } from "./env";
-import { updateEnv } from "../utils";
+import { clientEnv } from "./env";
+import { updateEnv } from "./utils/update-env";
 import { askQuestion } from "./utils/stdin";
 
 const baseUrl = "https://api.fitbit.com";
 
 const authorize = async (code: string) => {
-  const { clientId, clientSecret } = env;
+  const { clientId, clientSecret } = clientEnv();
   const token = btoa(`${clientId}:${clientSecret}`);
   const { data } = await axios.post(
     `${baseUrl}/oauth2/token`,
@@ -66,7 +66,9 @@ export const serveAuthServer = () => {
     console.log(
       `Server is running on port ${port}. Now visit the following page to authenticate:
 
-https://www.fitbit.com/oauth2/authorize?response_type=code&client_id=${env.clientId}&redirect_uri=http://localhost:${port}&scope=heartrate
+https://www.fitbit.com/oauth2/authorize?response_type=code&client_id=${
+        clientEnv().clientId
+      }&redirect_uri=http://localhost:${port}&scope=heartrate
 
 If the page does not redirect you to this server after authentication (if you're hosting this somewhere other than your own machine), you can enter the code manually here to continue:`
     );
