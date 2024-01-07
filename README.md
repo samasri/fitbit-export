@@ -12,3 +12,14 @@
 ## Visualization
 
 To see a graph of the data, run `yarn visualize`
+
+## Docker
+
+To run using docker:
+
+```sh
+mkdir ./data
+# Create .env based on .env.sample
+docker build . -t fitbit-export
+docker run --rm -it -v $PWD/.env:/app/.env -v $PWD/data:/app/data -p 8000:8000 fitbit-export help
+```
