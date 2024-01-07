@@ -1,6 +1,7 @@
 import axios from "axios";
 import assert from "assert";
 import { Command } from "commander";
+import { execSync } from "child_process";
 import dateValidator from "date-and-time";
 import { existsSync, mkdirSync, writeFileSync } from "fs";
 import pMap from "p-map";
@@ -152,5 +153,14 @@ program
   .action(async ({ startDate, endDate }) =>
     errorWrapper(saveRange, startDate, endDate)
   );
+
+program
+  .command("visualize")
+  .description("Visualizes heart rate data")
+  .action(async () => {
+    execSync("http-server -p 8000", {
+      stdio: [process.stdin, process.stdout, process.stderr],
+    });
+  });
 
 program.parse(process.argv);
