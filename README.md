@@ -21,5 +21,5 @@ To run using docker:
 mkdir ./data
 # Create .env based on .env.sample
 docker build . -t fitbit-export
-docker run --rm -it -v $PWD/.env:/app/.env -v $PWD/data:/app/data -p 8000:8000 fitbit-export help
+yarn docker help
 ```

@@ -123,7 +123,7 @@ program
   .action(async () => errorWrapper(introspect));
 
 program
-  .command("auth-server")
+  .command("auth")
   .description("Hosts a server and gives instructions on how to authenticate")
   .action(async () => errorWrapper(serveAuthServer));
 
