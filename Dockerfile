@@ -11,5 +11,6 @@ RUN yarn
 
 COPY src ./src
 COPY visualization ./visualization
+COPY favicon.ico ./
 
 ENTRYPOINT ["yarn","ts-node","./src/index.ts"]
