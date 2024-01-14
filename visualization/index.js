@@ -5,19 +5,19 @@ const luxonify = (time) => {
   return DateTime.fromObject({ hours, minutes, seconds });
 };
 
-const parseData = async (date, time) => {
+const parseData = async (date, time, hours) => {
   const day = await fetch(`../data/${date}`);
   let data = (await day.json()).dataset;
   data = data.filter(
     (e) =>
       luxonify(e.time) > luxonify(time) &&
-      luxonify(e.time) <= luxonify(time).plus({ hours: 1 })
+      luxonify(e.time) <= luxonify(time).plus({ hours })
   );
   return [data.map((e) => e.time), data.map((e) => e.value)];
 };
 
-const highCharts = async (date, time) => {
-  const [timeLabels, values] = await parseData(date, time);
+const highCharts = async (date, time, hours) => {
+  const [timeLabels, values] = await parseData(date, time, hours);
   Highcharts.chart("container", {
     chart: {
       type: "spline",
@@ -46,10 +46,15 @@ const highCharts = async (date, time) => {
 };
 
 let date = "2024-01-01";
-let time = "00:00:00";
+document.getElementById("date-input").value = date;
+let time = "09:00:00";
+document.getElementById("time-input").value = time;
+let hours = 1;
+document.getElementById("container").style.width = `${hours * 100}%`;
+document.getElementById("hours-input").value = hours;
 
 const refresh = () => {
-  highCharts(date, time);
+  highCharts(date, time, hours);
 };
 
 const changeDate = (receivedDate) => {
@@ -59,6 +64,12 @@ const changeDate = (receivedDate) => {
 
 const changeTime = (receivedTime) => {
   time = receivedTime;
+  refresh();
+};
+
+const changeHours = (receivedHours) => {
+  hours = receivedHours;
+  document.getElementById("container").style.width = `${hours * 100}%`;
   refresh();
 };
 
