@@ -16,7 +16,7 @@ const parseData = async (date, time, hours) => {
   return [data.map((e) => e.time), data.map((e) => e.value)];
 };
 
-const highCharts = async (date, time, hours) => {
+const setChart = async (date, time, hours) => {
   const [timeLabels, values] = await parseData(date, time, hours);
   Highcharts.chart("container", {
     chart: {
@@ -45,31 +45,42 @@ const highCharts = async (date, time, hours) => {
   });
 };
 
-let date = "2024-01-01";
-document.getElementById("date-input").value = date;
-let time = "09:00:00";
-document.getElementById("time-input").value = time;
-let hours = 1;
-document.getElementById("container").style.width = `${hours * 100}%`;
-document.getElementById("hours-input").value = hours;
+const config = {
+  date: "2024-01-01",
+  time: "09:00:00",
+  hours: 1,
+};
+document.getElementById("date-input").value = config.date;
+document.getElementById("time-input").value = config.time;
+document.getElementById("container").style.width = `${config.hours * 100}%`;
+document.getElementById("hours-input").value = config.hours;
+document.getElementById("width-input").value = "100";
 
 const refresh = () => {
-  highCharts(date, time, hours);
+  console.log("Refreshing...", config.hours);
+  setChart(config.date, config.time, config.hours);
 };
 
 const changeDate = (receivedDate) => {
-  date = receivedDate;
+  config.date = receivedDate;
   refresh();
 };
 
 const changeTime = (receivedTime) => {
-  time = receivedTime;
+  config.time = receivedTime;
   refresh();
 };
 
+const changeWidth = (receivedWidth) => {
+  const currentWidth = document.getElementById("width-input").value;
+  if (receivedWidth !== currentWidth)
+    document.getElementById("width-input").value = receivedWidth;
+  document.getElementById("container").style.width = `${receivedWidth}%`;
+};
+
 const changeHours = (receivedHours) => {
-  hours = receivedHours;
-  document.getElementById("container").style.width = `${hours * 100}%`;
+  config.hours = receivedHours;
+  changeWidth(config.hours * 100);
   refresh();
 };
 
